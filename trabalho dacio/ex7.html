@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise de cartão do Banco que deixa o NUbank no Chinelo</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #E31E76;
+      width: 450px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #ffffff;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .painel {
+      margin-top: 25px;
+      background: #eff6ff;
+      padding: 20px;
+      border-radius: 10px;
+      line-height: 1.8;
+    }
+
+    .valido {
+      color: green;
+      font-weight: bold;
+    }
+
+    .invalido {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1> Análise de cartão do Banco que deixa o NUbank no Chinelo </h1>
+
+    <label for="cartao">Número do Cartão</label>
+
+    <input
+      type="text"
+      id="cartao"
+      maxlength="19"
+      placeholder="Digite o número do cartão"
+    >
+
+    <button id="analisar">Analisar Cartão</button>
+
+    <div class="painel" id="resultado"></div>
+  </div>
+
+  <script>
+    const botao = document.getElementById("analisar");
+
+    botao.addEventListener("click", analisarCartao);
+
+    function analisarCartao() {
+
+      const input = document.getElementById("cartao").value;
+
+      const resultado = document.getElementById("resultado");
+
+      // Remove espaços e caracteres não numéricos
+      const numero = input.replace(/\D/g, '');
+
+      // Validação do tamanho
+      if (numero.length < 13 || numero.length > 16) {
+
+        resultado.innerHTML = `
+          <span class="invalido">
+            ❌ Número inválido! O cartão deve ter entre 13 e 16 dígitos.
+          </span>
+        `;
+
+        return;
+      }
+
+      // ===== Algoritmo de Luhn =====
+
+      let soma = 0;
+      let inverter = false;
+
+      for (let i = numero.length - 1; i >= 0; i--) {
+
+        let digito = parseInt(numero[i]);
+
+        if (inverter) {
+
+          digito *= 2;
+
+          if (digito > 9) {
+            digito -= 9;
+          }
+        }
+
+        soma += digito;
+
+        inverter = !inverter;
+      }
+
+      const valido = soma % 10 === 0;
+
+      // ===== Identificação da bandeira =====
+
+      let bandeira = "Desconhecida";
+
+      if (/^4/.test(numero)) {
+        bandeira = "Visa";
+      }
+
+      else if (/^5[1-5]/.test(numero)) {
+        bandeira = "MasterCard";
+      }
+
+      else if (/^3[47]/.test(numero)) {
+        bandeira = "American Express";
+      }
+
+      else if (/^6(?:011|5)/.test(numero)) {
+        bandeira = "Discover";
+      }
+
+      else if (/^35/.test(numero)) {
+        bandeira = "JCB";
+      }
+
+      // ===== Categoria do setor =====
+
+      const primeiroDigito = numero[0];
+
+      let setor = "";
+
+      switch (primeiroDigito) {
+
+        case "1":
+        case "2":
+          setor = "Companhias Aéreas";
+          break;
+
+        case "3":
+          setor = "Viagens e Entretenimento";
+          break;
+
+        case "4":
+        case "5":
+          setor = "Instituições Financeiras";
+          break;
+
+        case "6":
+          setor = "Comércio e Bancos";
+          break;
+
+        default:
+          setor = "Não identificado";
+      }
+
+      // ===== Banco emissor (simulado) =====
+
+      const iin = numero.substring(0, 6);
+
+      let banco = "Banco não identificado";
+
+      if (iin.startsWith("411111")) {
+        banco = "Infinity Bank Visa";
+      }
+
+      else if (iin.startsWith("550000")) {
+        banco = "Infinity Master";
+      }
+
+      else if (iin.startsWith("340000")) {
+        banco = "Infinity American Express";
+      }
+
+      // ===== Exibição =====
+
+      resultado.innerHTML = `
+        <strong>📋 Painel de Informações</strong><br><br>
+
+        🔎 Status:
+        <span class="${valido ? 'valido' : 'invalido'}">
+          ${valido ? '✅ Válido' : '❌ Inválido'}
+        </span>
+        <br>
+
+        💳 Bandeira: ${bandeira}<br>
+
+        🏢 Categoria de Setor: ${setor}<br>
+
+        🏦 Banco Emissor: ${banco}<br>
+
+        🔢 IIN/BIN: ${iin}
+      `;
+    }
+  </script>
+
+</body>
+</html>

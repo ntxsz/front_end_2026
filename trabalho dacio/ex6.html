@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eventos do Banco que deixa o NUbank no Chinelo</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #E31E76;
+      width: 420px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #ffffff;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background-color: #2563eb;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .resultado {
+      margin-top: 25px;
+      background: #eff6ff;
+      padding: 20px;
+      border-radius: 8px;
+      line-height: 1.8;
+    }
+
+    .desconto {
+      color: green;
+      font-weight: bold;
+    }
+
+    .total {
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1> Eventos do Banco que deixa o NUbank no Chinelo </h1>
+
+    <label for="pacote">Escolha o Pacote</label>
+
+    <select id="pacote">
+      <option value="50">Básico do Básico - R$ 50,00</option>
+      <option value="80">Sentir um pouco mais especial - R$ 80,00</option>
+      <option value="120">Aqui da pra brincar um pouco - R$ 120,00</option>
+    </select>
+
+    <label for="pessoas">Quantidade de Pessoas</label>
+
+    <input type="number" id="pessoas" placeholder="Digite a quantidade">
+
+    <button id="calcular">Calcular Orçamento</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    const botao = document.getElementById("calcular");
+
+    botao.addEventListener("click", () => {
+
+      const valorPacote = Number(document.getElementById("pacote").value);
+
+      const pessoas = Number(document.getElementById("pessoas").value);
+
+      const resultado = document.getElementById("resultado");
+
+      // 1. Cálculo base
+      const custoBruto = valorPacote * pessoas;
+
+      // 2. Taxa de serviço (10%)
+      const taxaServico = custoBruto * 0.10;
+
+      // Valor com taxa
+      const subtotal = custoBruto + taxaServico;
+
+      // 3. Desconto fidelidade
+      let desconto = 0;
+
+      if (pessoas > 100) {
+        desconto = subtotal * 0.05;
+      }
+
+      // Total final
+      const totalFinal = subtotal - desconto;
+
+      resultado.innerHTML = `
+        <strong>📋 Resumo do Evento</strong><br><br>
+
+        👥 Convidados: ${pessoas}<br>
+
+        💰 Custo Bruto: R$ ${custoBruto.toFixed(2)}<br>
+
+        🛎️ Taxa de Serviço (10%): R$ ${taxaServico.toFixed(2)}<br>
+
+        <span class="desconto">
+          🎁 Desconto Aplicado: R$ ${desconto.toFixed(2)}
+        </span><br>
+
+        <div class="total">
+          ✅ Total Final: R$ ${totalFinal.toFixed(2)}
+        </div>
+      `;
+    });
+  </script>
+
+</body>
+</html>

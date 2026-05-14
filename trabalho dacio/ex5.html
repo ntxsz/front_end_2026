@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CONVIDADOS VIP</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #E31E76;
+      width: 450px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+    }
+
+    .btn-add {
+      background-color: #2563eb;
+    }
+
+    .btn-add:hover {
+      background-color: #1d4ed8;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .nome {
+      flex: 1;
+      font-size: 16px;
+    }
+
+    .riscado {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 5px;
+    }
+
+    .concluir {
+      background-color: #16a34a;
+    }
+
+    .editar {
+      background-color: #f59e0b;
+    }
+
+    .excluir {
+      background-color: #dc2626;
+    }
+
+    .concluir:hover {
+      background-color: #15803d;
+    }
+
+    .editar:hover {
+      background-color: #d97706;
+    }
+
+    .excluir:hover {
+      background-color: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1> CONVIDADOS VIP </h1>
+
+    <div class="input-area">
+      <input type="text" id="nomeInput" placeholder="Digite o nome do convidado">
+      <button class="btn-add" id="adicionar">Adicionar</button>
+    </div>
+
+    <ul id="listaConvidados"></ul>
+  </div>
+
+  <script>
+    const input = document.getElementById("nomeInput");
+    const botaoAdicionar = document.getElementById("adicionar");
+    const lista = document.getElementById("listaConvidados");
+
+    // Array de convidados
+    let convidados = [];
+
+    botaoAdicionar.addEventListener("click", adicionarConvidado);
+
+    function adicionarConvidado() {
+
+      const nome = input.value.trim();
+
+      // Evita nomes vazios
+      if (nome === "") {
+        alert("Digite um nome válido!");
+        return;
+      }
+
+      convidados.push(nome);
+
+      renderizarLista();
+
+      input.value = "";
+      input.focus();
+    }
+
+    function renderizarLista() {
+
+      lista.innerHTML = "";
+
+      convidados.forEach((convidado, index) => {
+
+        const li = document.createElement("li");
+
+        const span = document.createElement("span");
+        span.classList.add("nome");
+        span.textContent = convidado;
+
+        // Área dos botões
+        const divAcoes = document.createElement("div");
+        divAcoes.classList.add("acoes");
+
+        // Botão Concluir
+        const btnConcluir = document.createElement("button");
+        btnConcluir.textContent = "Concluir";
+        btnConcluir.classList.add("concluir");
+
+        btnConcluir.addEventListener("click", () => {
+          span.classList.toggle("riscado");
+        });
+
+        // Botão Editar
+        const btnEditar = document.createElement("button");
+        btnEditar.textContent = "Editar";
+        btnEditar.classList.add("editar");
+
+        btnEditar.addEventListener("click", () => {
+
+          const novoNome = prompt("Editar nome:", convidado);
+
+          if (novoNome !== null && novoNome.trim() !== "") {
+
+            convidados[index] = novoNome.trim();
+
+            renderizarLista();
+          }
+        });
+
+        // Botão Excluir
+        const btnExcluir = document.createElement("button");
+        btnExcluir.textContent = "Excluir";
+        btnExcluir.classList.add("excluir");
+
+        btnExcluir.addEventListener("click", () => {
+
+          convidados.splice(index, 1);
+
+          renderizarLista();
+        });
+
+        // Adiciona os botões
+        divAcoes.appendChild(btnConcluir);
+        divAcoes.appendChild(btnEditar);
+        divAcoes.appendChild(btnExcluir);
+
+        // Monta o item
+        li.appendChild(span);
+        li.appendChild(divAcoes);
+
+        lista.appendChild(li);
+      });
+    }
+  </script>
+
+</body>
+</html>
